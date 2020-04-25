@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
+import turtle
 
 root = Tk()
 root.geometry('+400+300')
@@ -18,12 +19,8 @@ sqr.pack()
 
 entry.insert(0, 'Введи расстояние')
 
-
-
 btns = Button(root, text='Считай!', command=lambda coords=coords: squarea(coords))
 btns.pack()
-
-import turtle
 
 
 def right(entry=entry):
@@ -32,12 +29,14 @@ def right(entry=entry):
     if s.isdigit():
         if pos != 1:
             l = int(entry.get())
-            sx = sx + l
-            pos = 0
+            sx = sx + l/2
             t.goto(sx, sy)
-            perim+=l
+            pos = 0
+            t.write(l, align = 'center')
+            sx = sx + l / 2
+            t.goto(sx, sy)
+            perim += l
             coords.append((sx, sy,))
-            print(coords)
         else:
             messagebox.showinfo('Опасно', "Не туда воюешь")
 
@@ -48,12 +47,14 @@ def left(entry=entry):
     if s.isdigit():
         if pos != 0:
             l = int(entry.get())
-            sx = sx - l
+            sx = sx - l/2
+            t.goto(sx, sy)
             pos = 1
+            t.write(l, align = 'center')
+            sx = sx - l / 2
             t.goto(sx, sy)
             perim += l
             coords.append((sx, sy,))
-            print(coords)
         else:
             messagebox.showinfo('Опасно', "Не туда воюешь")
 
@@ -64,12 +65,14 @@ def up(entry=entry):
     if s.isdigit():
         if pos != 3:
             l = int(entry.get())
-            sy = sy + l
+            sy = sy + l/2
+            t.goto(sx, sy)
             pos = 2
+            t.write(l, align = 'center')
+            sy = sy + l/2
             t.goto(sx, sy)
             perim += l
             coords.append((sx, sy,))
-            print(coords)
         else:
             messagebox.showinfo('Опасно', "Не туда воюешь")
 
@@ -80,27 +83,25 @@ def down(entry=entry):
     if s.isdigit():
         if pos != 2:
             l = int(entry.get())
-            sy = sy - l
+            sy = sy - l/2
+            t.goto(sx, sy)
             pos = 3
+            t.write(l, align = 'center')
+            sy = sy - l/2
             t.goto(sx, sy)
             perim += l
             coords.append((sx, sy,))
-            print(coords)
         else:
             messagebox.showinfo('Опасно', "Не туда воюешь")
 
-
-canvas = Canvas(root, width=500, height=500)
-canvas.pack()
-
-t = turtle.RawTurtle(canvas)
-t.pencolor("#ff0000")  # Red
 
 """
 https://ru.wikipedia.org/wiki/Формула_площади_Гаусса#Определение
 :param coords: [(x_0, y_0), (x_1, y_1), ..., (x_n, y_n)]
 :return: area of the polygon
 """
+
+
 def squarea(coords):
     n = len(coords)
     i = 0
@@ -118,18 +119,21 @@ def squarea(coords):
         sum -= x_i_1 * y_i
         i += 1
     sum -= coords[0][0] * coords[n - 1][1]
-    sqr['text'] ='Sqaure:' + str((abs(sum) / 2))
-    per['text'] = 'Perimeter:'+str(perim)
+    sqr['text'] = 'Square:' + str((abs(sum) / 2))
+    per['text'] = 'Perimeter:' + str(perim)
     print(abs(sum) / 2)
 
 
-t.pendown()  # Regarding one of the comments
+canvas = Canvas(root, width=500, height=500)
+canvas.pack()
 
-Button(master=root, text="up", command=up).pack(side=LEFT)
-Button(master=root, text="down", command=down).pack(side=LEFT)
-Button(master=root, text="Left", command=left).pack(side=LEFT)
-Button(master=root, text="Right", command=right).pack(side=LEFT)
+t = turtle.RawTurtle(canvas)
+t.pencolor("#ff0000")
+t.pendown()
 
-root.mainloop()
+Button(root, text="Up", command=up).pack(side=LEFT)
+Button(root, text="Down", command=down).pack(side=LEFT)
+Button(root, text="Left", command=left).pack(side=LEFT)
+Button(root, text="Right", command=right).pack(side=LEFT)
 
 root.mainloop()
